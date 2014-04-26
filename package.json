@@ -1,0 +1,18 @@
+{
+    "name": "readability2",
+    "version": "0.0.2",
+    "description": "[readability2.js] converts an HTML page into plain text",
+    "keywords": ["readability", "readable", "clean", "html", "plain", "text", "extract", "content"],
+    "author": "Mark Vasilkov (https://github.com/mvasilkov)",
+    "main": "readability2",
+    "files": ["readability2.js", "README", "demo.js", "demo.html"],
+    "repository": {
+        "type": "git",
+        "url": "git@bitbucket.org:mvasilkov/centrifugal_supercharger.git"
+    },
+    "devDependencies": {
+        "jshint": "~2.5",
+        "sax": "~0.6"
+    },
+    "license": "MIT"
+}
