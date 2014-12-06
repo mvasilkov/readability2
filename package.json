@@ -1,6 +1,6 @@
 {
     "name": "readability2",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "[readability2.js] converts an HTML page into plain text",
     "keywords": ["readability", "readable", "clean", "html", "plain", "text", "extract", "content"],
     "author": "Mark Vasilkov (https://github.com/mvasilkov)",

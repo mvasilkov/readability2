@@ -30,6 +30,28 @@
         if (this.sum > res.sum) res.node = this, res.sum = this.sum
     }
 
+    LilNode.prototype.trailblaze = function () {
+        var i, node
+        for (i = this.childNodes.length; i--;) {
+            node = this.childNodes[i]
+            switch (true) {
+                case node.constructor === LilNode:
+                if (node.score + 1 > node.tags) return
+                break
+
+                case node.constructor === LilText:
+                if (node.chars !== 0) return
+                break
+
+                case node === br: break
+
+                default: return
+            }
+            this.childNodes.splice(i, 1)
+            node.parentNode = null
+        }
+    }
+
     const cutoff = 9, improve = 2
 
     LilNode.prototype.decimate = function () {
@@ -140,6 +162,7 @@
         var res = { node: this.root, sum: 96, heading: this.getHeading() }
         this.root.compute(res)
         while (res.node.decimate()) {}
+        res.node.trailblaze()
         return res
     }
 
