@@ -1,5 +1,6 @@
-/* [readability2.js] converts an HTML page into plain text
- * Copyright (c) 2014 Mark Vasilkov (https://github.com/mvasilkov)
+/* [readability2.js][1] converts HTML into plain text
+ * Copyright (c) 2015 Mark Vasilkov (https://github.com/mvasilkov)
+ * [1]: https://github.com/mvasilkov/readability2/blob/master/readability2.js
  * License: MIT */
 (function () {
     function LilNode(tagName) {
@@ -27,27 +28,38 @@
             this.sum += node.score
         }
         this.score = this.chars / this.tags * comp(this.chars, this.hyperchars)
+        if (this._substandardContent) this.score *= 0.1
         if (this.sum > res.sum) res.node = this, res.sum = this.sum
+    }
+
+    function isBad(node) {
+        switch (true) {
+            case node.constructor === LilNode:
+            if (node.score + 0.1 > node.tags) return
+            break
+
+            case node.constructor === LilText:
+            if (node.chars !== 0) return
+            break
+
+            case node === br: break
+
+            default: return
+        }
+        return true
     }
 
     LilNode.prototype.trailblaze = function () {
         var i, node
         for (i = this.childNodes.length; i--;) {
-            node = this.childNodes[i]
-            switch (true) {
-                case node.constructor === LilNode:
-                if (node.score + 1 > node.tags) return
-                break
-
-                case node.constructor === LilText:
-                if (node.chars !== 0) return
-                break
-
-                case node === br: break
-
-                default: return
+            if ((node = this.childNodes[i]) && isBad(node)) {
+                this.childNodes.splice(i, 1)
+                node.parentNode = null
             }
-            this.childNodes.splice(i, 1)
+            else break
+        }
+        while ((node = this.childNodes[0]) && isBad(node)) {
+            this.childNodes.shift()
             node.parentNode = null
         }
     }
@@ -73,6 +85,7 @@
     }
 
     LilNode.prototype._hyperlinkContent = false
+    LilNode.prototype._substandardContent = false
 
     LilNode.prototype.appendChild = function (node) {
         if (node.parentNode !== null)
@@ -119,7 +132,7 @@
         this.parentNode = null
     }
 
-    const spaaace = /\s+/g
+    const spaaace = /[\s\u200b]+/g
 
     LilText.prototype.compute = function () {
         this.chars = this.textContent.replace(spaaace, '').length
@@ -153,16 +166,19 @@
     }
 
     function Readability() {
-        this._cur = this.root = new LilNode('[[Readability]]')
+        this._cur = this.root = new LilNode('readability2')
         this.headings = []
         this.title = null
     }
 
     Readability.prototype.compute = function () {
         var res = { node: this.root, sum: 96, heading: this.getHeading() }
+        if (res.heading && res.heading.indexOf('::') !== -1) {
+            res.heading = res.heading.split('::')[0].trim()
+        }
         this.root.compute(res)
-        while (res.node.decimate()) {}
-        res.node.trailblaze()
+        do { res.node.trailblaze() }
+        while (res.node.decimate())
         return res
     }
 
@@ -197,6 +213,8 @@
         this._cur = this._cur.appendChild(new LilNode(name))
         this._cur._hyperlinkContent = this._cur.parentNode._hyperlinkContent ||
                                       name === 'button' || name === 'option'
+        this._cur._substandardContent = this._cur.parentNode._substandardContent ||
+                                        name === 'footer' || name === 'textarea'
     }
 
     Readability.prototype.onclosetag = function (name) {
@@ -213,6 +231,7 @@
             }
             case 'br':
             case 'figcaption':
+            case 'figure':
             case 'head':
             case 'hr':
             case 'iframe':
@@ -235,10 +254,14 @@
 
     Readability.prototype.onattribute = function (name, value) {
         name = name.toLowerCase()
-        if (name === 'id')
+        if (name === 'id') {
             this._cur.id = value
+            if (/^comment/.test(value)) this._cur._substandardContent = true
+        }
         else if (name === 'href' && this._cur.tagName === 'a')
             this._cur._hyperlinkContent = true
+        else if (name === 'itemtype' && value === 'http://schema.org/Comment')
+            this._cur._substandardContent = true
     }
 
     Readability.prototype.ontext = function (text) {
@@ -248,11 +271,17 @@
         else this._cur.appendChild(new LilText(text))
     }
 
+    const intro = /^(.*?)\n+/
+
     Readability.clean = Readability.prototype.clean = function (res) {
-        return res.node.toString().trim()
+        var out = res.node.toString().trim()
         .replace(/ *\n */g, '\n')
         .replace(/ {2,}/g, ' ')
         .replace(/\n{3,}/g, '\n\n')
+        var x = out.match(intro)
+        if (x && x[1] === res.heading)
+            out = out.replace(intro, '')
+        return out
     }
 
     if (typeof module === 'object' && module.exports)
