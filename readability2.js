@@ -1,7 +1,7 @@
 /* [readability2.js] converts an HTML page into plain text
  * Copyright (c) 2014 Mark Vasilkov (https://github.com/mvasilkov)
  * License: MIT */
--function () {
+(function () {
     function LilNode(tagName) {
         this.tagName = tagName
         this.parentNode = null
@@ -259,4 +259,4 @@
         module.exports = { LilNode: LilNode, LilText: LilText, Readability: Readability }
     else if (typeof define === 'function' && define.amd) define(function () { return Readability })
     else if (typeof window === 'object') window.Readability = Readability
-}()
+})()
