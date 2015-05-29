@@ -1,0 +1,14 @@
+{
+    "asi": true,
+    "camelcase": true,
+    "esnext": true,
+    "expr": true,
+    "laxbreak": true,
+    "noarg": true,
+    "node": true,
+    "predef": ["define", "window"],
+    "supernew": true,
+    "trailing": true,
+    "undef": true,
+    "unused": true
+}
