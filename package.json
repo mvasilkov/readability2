@@ -1,19 +1,29 @@
 {
-    "name": "readability2",
-    "version": "0.1.0",
-    "description": "readability2.js converts HTML into plain text",
-    "keywords": ["readability", "readable", "clean", "html", "plain", "text", "extract", "content"],
-    "author": "Mark Vasilkov (https://github.com/mvasilkov)",
-    "main": "readability2",
-    "repository": {
-        "type": "git",
-        "url": "git@github.com:mvasilkov/Godhammer.git"
-    },
-    "devDependencies": {
-        "jshint": "~2.7",
-        "mocha": "~2.2",
-        "rssi": "~0.0",
-        "sax": "~1.1"
-    },
-    "license": "MIT"
+  "name": "readability2",
+  "version": "0.1.0",
+  "description": "readability2.js converts HTML into plain text",
+  "keywords": [
+    "readability",
+    "readable",
+    "clean",
+    "html",
+    "plain",
+    "text",
+    "extract",
+    "content"
+  ],
+  "author": "Mark Vasilkov (https://github.com/mvasilkov)",
+  "main": "readability2",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:mvasilkov/readability2.git"
+  },
+  "devDependencies": {
+    "htmlparser2": "^3.8.3",
+    "jshint": "^2.8.0",
+    "mocha": "^2.3.4",
+    "rssi": "^0.0",
+    "sax": "^1.1.4"
+  },
+  "license": "MIT"
 }
