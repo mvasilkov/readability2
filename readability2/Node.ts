@@ -23,7 +23,21 @@ export class Node implements INode {
         this.tagName = tagName
     }
 
-    compute() {
+    appendChild(n: INode): INode {
+        if (n.parentNode !== null)
+            throw Error('appendChild: Attempted reparenting')
+        n.parentNode = this
+        this.childNodes.push(n)
+        return n
+    }
+
+    lastChild(): INode | null {
+        if (this.childNodes.length == 0)
+            return null
+        return this.childNodes[this.childNodes.length - 1]
+    }
+
+    compute(needle: { node: INode, sum: number } = { node: InfinityNode, sum: Infinity }) {
         this.chars = this.hyperchars = this.sum = 0
         this.tags = 1
 
@@ -39,9 +53,12 @@ export class Node implements INode {
 
         if (this.ofVariety(ContentVariety.bad))
             this.score *= 0.1
+
+        if (this.sum > needle.sum)
+            needle.node = this, needle.sum = this.sum
     }
 
-    ofVariety(variety: ContentVariety): boolean {
+    ofVariety(variety: ContentVariety.hyperlink | ContentVariety.bad): boolean {
         return (this.variety & variety) != 0
     }
 
@@ -50,3 +67,5 @@ export class Node implements INode {
         return parts.join('')
     }
 }
+
+const InfinityNode = new Node('Infinity')

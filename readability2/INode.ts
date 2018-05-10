@@ -6,7 +6,8 @@ export interface INode {
     tags: number | undefined
     score: number | undefined
 
-    compute: () => void
+    compute(): void
+    compute(needle: { node: INode, sum: number }): void
 
-    toString: () => string
+    toString(): string
 }
