@@ -42,7 +42,7 @@ export class Node implements INode {
         this.tags = 1
 
         this.childNodes.forEach(n => {
-            n.compute()
+            n.compute(needle)
             this.chars += n.chars as any
             this.hyperchars += n.hyperchars as any
             this.tags += n.tags as any

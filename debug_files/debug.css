@@ -1,0 +1,38 @@
+table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+tr {
+    border-bottom: 1px solid #b0b0b0;
+}
+
+td.node {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+td.score, td.sum {
+    width: 150px;
+}
+
+code {
+    color: #0073bf;
+}
+
+.needle {
+    background-color: #ffcd3a;
+}
+
+.bar {
+    position: relative;
+}
+
+.line {
+    background-color: #4eba0f;
+    bottom: 0;
+    height: 3px;
+    left: 0;
+    position: absolute;
+}

@@ -1,7 +1,63 @@
 const fs = require('fs')
+const he = require('he')
+const opn = require('opn')
 const Parse5 = require('parse5')
 
 const { Readability } = require('./readability2js/Readability')
+const { Newline } = require('./readability2js/Newline')
+
+function useless(string) {
+    if (string)
+        return string.trim() == ''
+    return true
+}
+
+function writeTab(node, needle, tab, level) {
+    let nope = false
+
+    let a = `<tr class="${node === needle.node ? 'needle' : ''}">`
+    a += `<td class="node" style="padding-left: ${level * 10}px">`
+    if (node.tagName != null)
+        a += `<code>${node.tagName}</code>`
+    else if (node.textContent != null) {
+        if (useless(node.textContent))
+            nope = true
+        else
+            a += he.encode(node.textContent)
+    }
+    else if (node.constructor === Newline)
+        a += '<code>br</code>'
+    else
+        throw Error('WTF')
+    a += '</td><td class="score">'
+    if (node.score)
+        a += node.score.toFixed(2)
+    a += '</td><td class="sum">'
+    if (node.sum)
+        a += `<div class="bar" data-sum="${node.sum}">${node.sum.toFixed(2)}</div>`
+    a += '</td></tr>'
+
+    nope || tab.push(a)
+
+    if (!node.childNodes) return
+
+    ++level
+    node.childNodes.forEach(n => writeTab(n, needle, tab, level))
+}
+
+function writePage(r, needle) {
+    let html = fs.readFileSync(`${__dirname}/debug_files/base.html`, { encoding: 'utf8' })
+
+    let tab = ['<table>']
+    writeTab(r.reader.root, needle, tab, -1)
+    tab.push('</table>')
+
+    html = html.replace('{{ contents }}', tab.join('\n'))
+
+    const filename = `${__dirname}/debug.html`
+    fs.writeFileSync(filename, html, { encoding: 'utf8' })
+    opn(filename)
+}
 
 function run(filename) {
     const r = new Readability
@@ -24,7 +80,9 @@ function run(filename) {
     })
 
     parser.on('finish', function () {
-        r.compute()
+        const needle = r.compute()
+        console.log('Found %s with score of %s', needle.node.tagName, needle.sum)
+        writePage(r, needle)
     })
 
     file.pipe(parser)
