@@ -7,8 +7,8 @@ export class Text implements INode {
 
     chars: number | undefined
     hyperchars: number | undefined
-    readonly tags = 0
-    readonly score = 0
+    readonly tags: number | undefined
+    readonly score: number | undefined
 
     constructor(textContent: string) {
         this.textContent = textContent
@@ -23,3 +23,8 @@ export class Text implements INode {
         return this.textContent
     }
 }
+
+Object.defineProperties(Text.prototype, {
+    tags: { value: 0 },
+    score: { value: 0 },
+})

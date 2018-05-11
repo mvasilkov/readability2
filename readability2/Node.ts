@@ -7,9 +7,9 @@ export enum ContentVariety {
 }
 
 export class Node implements INode {
-    parentNode: INode | null = null
+    parentNode: Node | null = null
     childNodes: INode[] = []
-    tagName: string
+    readonly tagName: string
 
     chars: number | undefined
     hyperchars: number | undefined
@@ -23,7 +23,7 @@ export class Node implements INode {
         this.tagName = tagName
     }
 
-    appendChild(n: INode): INode {
+    appendChild<N extends INode>(n: N): N {
         if (n.parentNode !== null)
             throw Error('appendChild: Attempted reparenting')
         n.parentNode = this
