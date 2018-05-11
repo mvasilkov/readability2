@@ -1,6 +1,6 @@
 import { INode } from './INode'
 
-export enum ContentVariety {
+export const enum ContentVariety {
     normal = 0,
     hyperlink = 1,
     bad = 2,

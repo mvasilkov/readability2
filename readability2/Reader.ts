@@ -1,6 +1,7 @@
 import { IReader } from './IReader'
 import { ContentVariety, Node } from './Node'
 import { Text } from './Text'
+import { Newline } from './Newline'
 
 export class Reader implements IReader {
     readonly root: Node
@@ -22,6 +23,13 @@ export class Reader implements IReader {
 
         if (this._cur.tagName != name || this._cur.parentNode == null)
             throw Error('onclosetag: Not balanced')
+
+        this._cur = this._cur.parentNode
+
+        switch (name) {
+            case 'br':
+                this._cur.childNodes.splice(-1, 1, Newline.instance)
+        }
     }
 
     onattribute(name: string, value: string) {
