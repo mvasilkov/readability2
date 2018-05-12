@@ -6,6 +6,9 @@ const Parse5 = require('parse5')
 const { Readability } = require('./readability2js/Readability')
 const { Newline } = require('./readability2js/Newline')
 
+const hyperlink = 1
+const bad = 2
+
 function useless(string) {
     if (string)
         return string.trim() == ''
@@ -15,7 +18,13 @@ function useless(string) {
 function writeTab(node, needle, tab, level) {
     let nope = false
 
-    let a = `<tr class="${node === needle.node ? 'needle' : ''}">`
+    let className = node === needle.node ? 'needle' : ''
+    if (typeof node.ofVariety == 'function') {
+        if (node.ofVariety(hyperlink)) className += ' hyperlink'
+        if (node.ofVariety(bad)) className += ' bad'
+    }
+
+    let a = `<tr class="${className}">`
     a += `<td class="node" style="padding-left: ${level * 10}px">`
     if (node.tagName != null)
         a += `<code>${node.tagName}</code>`

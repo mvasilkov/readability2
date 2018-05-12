@@ -36,3 +36,11 @@ code {
     left: 0;
     position: absolute;
 }
+
+.hyperlink {
+    background-color: #b5d5ff;
+}
+
+.bad {
+    text-decoration: line-through #c81b28;
+}

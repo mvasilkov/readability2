@@ -11,12 +11,12 @@ export class Readability {
     readonly ontext: (content: string) => void
 
     constructor() {
-        this.reader = new Reader
+        const r = this.reader = new Reader
 
-        this.onopentag = this.reader.onopentag.bind(this.reader)
-        this.onclosetag = this.reader.onclosetag.bind(this.reader)
-        this.onattribute = this.reader.onattribute.bind(this.reader)
-        this.ontext = this.reader.ontext.bind(this.reader)
+        this.onopentag = r.onopentag.bind(r)
+        this.onclosetag = r.onclosetag.bind(r)
+        this.onattribute = r.onattribute.bind(r)
+        this.ontext = r.ontext.bind(r)
     }
 
     compute() {
