@@ -2,6 +2,7 @@ import { IReader } from './IReader'
 import { ContentVariety, Node } from './Node'
 import { Text } from './Text'
 import { Newline } from './Newline'
+import { tagsIgnore } from './options'
 
 export class Reader implements IReader {
     readonly root: Node
@@ -25,6 +26,11 @@ export class Reader implements IReader {
             throw Error('onclosetag: Not balanced')
 
         this._cur = this._cur.parentNode
+
+        if (tagsIgnore.has(name)) {
+            this._cur.childNodes.pop()
+            return
+        }
 
         switch (name) {
             case 'br':

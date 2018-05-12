@@ -1,4 +1,5 @@
 import { INode } from './INode'
+import { tagsBlock } from './options'
 
 export const enum ContentVariety {
     normal = 0,
@@ -64,6 +65,10 @@ export class Node implements INode {
 
     toString() {
         const parts = this.childNodes.map(n => n.toString())
+        if (tagsBlock.has(this.tagName)) {
+            parts.unshift('\n\n')
+            parts.push('\n\n')
+        }
         return parts.join('')
     }
 }
