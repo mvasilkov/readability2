@@ -92,6 +92,7 @@ function run(filename) {
         const needle = r.compute()
         console.log('Found %s with score of %s', needle.node.tagName, needle.sum)
         writePage(r, needle)
+        console.log(r.clean())
     })
 
     file.pipe(parser)

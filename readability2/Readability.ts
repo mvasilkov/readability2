@@ -1,6 +1,7 @@
 import { IReader } from './IReader'
 import { Reader } from './Reader'
 import { INode } from './INode'
+import { normalizeSpace } from './functions'
 
 export class Readability {
     readonly reader: IReader
@@ -9,6 +10,8 @@ export class Readability {
     readonly onclosetag: (name: string) => void
     readonly onattribute: (name: string, value: string) => void
     readonly ontext: (content: string) => void
+
+    _needle: { node: INode, sum: number } | null = null
 
     constructor() {
         const r = this.reader = new Reader
@@ -23,6 +26,12 @@ export class Readability {
         const { root } = this.reader
         const needle: { node: INode, sum: number } = { node: root, sum: 0 }
         root.compute(needle)
-        return needle
+        return this._needle = needle
+    }
+
+    clean(): string {
+        if (this._needle == null)
+            return ''
+        return normalizeSpace(this._needle.node.toString())
     }
 }
