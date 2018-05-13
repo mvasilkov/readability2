@@ -1,10 +1,7 @@
-export const tagsIgnore: Set<string> = new Set([
+export const junk: Set<string> = new Set([
     'applet',
-    'audio',
     'canvas',
     'embed',
-    'figcaption',
-    'figure',
     'frame',
     'frameset',
     'head',
@@ -16,21 +13,29 @@ export const tagsIgnore: Set<string> = new Set([
     'noscript',
     'object',
     'param',
-    'picture',
     'script',
-    'source',
     'style',
     'template',
+])
+
+export const av: Set<string> = new Set([
+    'audio',
+    'figcaption',
+    'figure',
+    'picture',
+    'source',
     'track',
     'video',
 ])
 
-export const tagsBlock: Set<string> = new Set([
+export const block: Set<string> = new Set([
     'address',
     'article',
     'aside',
     'blockquote',
     'div',
+    'figcaption',
+    'figure',
     'footer',
     'h1',
     'h2',
