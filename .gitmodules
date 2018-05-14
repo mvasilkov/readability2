@@ -1,0 +1,3 @@
+[submodule "r2_test_pages"]
+	path = r2_test_pages
+	url = git@github.com:mvasilkov/r2_test_pages.git
