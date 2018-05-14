@@ -52,3 +52,20 @@ export const block: Set<string> = new Set([
     'pre',
     'section',
 ])
+
+export const autoclose: Set<string> = new Set([
+    'area',
+    'base',
+    'br',
+    'col',
+    'embed',
+    'hr',
+    'img',
+    'input',
+    'link',
+    'meta',
+    'param',
+    'source',
+    'track',
+    'wbr',
+])

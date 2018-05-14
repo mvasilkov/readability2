@@ -5,6 +5,7 @@ const Parse5 = require('parse5')
 
 const { Readability } = require('./readability2js/Readability')
 const { Newline } = require('./readability2js/Newline')
+const { autoclose } = require('./readability2js/grouping')
 
 const hyperlink = 1
 const bad = 2
@@ -76,12 +77,12 @@ function run(filename) {
     parser.on('startTag', function (name, attrs, selfClosing) {
         r.onopentag(name)
         attrs.forEach(attr => r.onattribute(attr.name, attr.value))
-        if (selfClosing)
+        if (selfClosing || autoclose.has(name))
             r.onclosetag(name)
     })
 
     parser.on('endTag', function (name) {
-        r.onclosetag(name)
+        autoclose.has(name) || r.onclosetag(name)
     })
 
     parser.on('text', function (text) {
