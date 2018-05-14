@@ -2,7 +2,8 @@
 
 import urllib.request
 import zlib
-# pip3 install python-slugify
+
+# Install python-slugify
 from slugify import slugify
 
 FIREFOX = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:55.0) Gecko/20100101 Firefox/55.0'

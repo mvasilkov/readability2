@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES6",
     "module": "commonjs",
-    "outDir": "readability2js",
+    "outDir": "javascript",
     "strict": true
   }
 }

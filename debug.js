@@ -3,9 +3,9 @@ const he = require('he')
 const opn = require('opn')
 const Parse5 = require('parse5')
 
-const { Readability } = require('./readability2js/Readability')
-const { Newline } = require('./readability2js/Newline')
-const { autoclose } = require('./readability2js/grouping')
+const { Readability } = require('./javascript/Readability')
+const { Newline } = require('./javascript/Newline')
+const { connect } = require('./javascript/coupling/parse5')
 
 const hyperlink = 1
 const bad = 2
@@ -74,20 +74,7 @@ function run(filename) {
     const parser = new Parse5.SAXParser
     const file = fs.createReadStream(filename, { encoding: 'utf8' })
 
-    parser.on('startTag', function (name, attrs, selfClosing) {
-        r.onopentag(name)
-        attrs.forEach(attr => r.onattribute(attr.name, attr.value))
-        if (selfClosing || autoclose.has(name))
-            r.onclosetag(name)
-    })
-
-    parser.on('endTag', function (name) {
-        autoclose.has(name) || r.onclosetag(name)
-    })
-
-    parser.on('text', function (text) {
-        r.ontext(text)
-    })
+    connect(r, parser)
 
     parser.on('finish', function () {
         const needle = r.compute()
