@@ -20,11 +20,18 @@ def run(url):
     _, headers = urllib.request.urlretrieve(url, filename)
 
     if headers.get('Content-Encoding') == 'gzip':
-        with open(filename, 'rb') as input:
-            b = zlib.decompress(input.read(), zlib.MAX_WBITS + 16)
+        with open(filename, 'rb') as infile:
+            b = zlib.decompress(infile.read(), zlib.MAX_WBITS + 16)
 
-        with open(filename, 'wb') as output:
-            output.write(b)
+        with open(filename, 'wb') as outfile:
+            outfile.write(b)
+
+    if headers.get('Content-Type').endswith('charset=Windows-1251'):
+        with open(filename, 'r', encoding='Windows-1251') as infile:
+            a = infile.read()
+
+        with open(filename, 'w', encoding='utf-8') as outfile:
+            outfile.write(a)
 
 
 if __name__ == '__main__':
