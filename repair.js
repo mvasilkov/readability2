@@ -7,7 +7,7 @@ function run(filename, done) {
         const b = fs.statSync(filename + '.repair').mtimeMs
 
         if (a < b) {
-            if (typeof done == 'function') done()
+            if (typeof done == 'function') done(null, filename)
             return
         }
     }
@@ -22,7 +22,7 @@ function run(filename, done) {
         const writer = new Parse5.SerializerStream(parser.document)
 
         outfile.once('finish', function () {
-            if (typeof done == 'function') done()
+            if (typeof done == 'function') done(null, filename)
         })
 
         writer.pipe(outfile)
