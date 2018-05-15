@@ -5,4 +5,3 @@ for page in r2_test_pages/html/*.html; do
 done
 echo '---'
 node run_tests.js
-rm r2_test_pages/html/*.repair

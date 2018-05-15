@@ -2,6 +2,18 @@ const fs = require('fs')
 const Parse5 = require('parse5')
 
 function run(filename, done) {
+    try {
+        const a = fs.statSync(filename).mtimeMs
+        const b = fs.statSync(filename + '.repair').mtimeMs
+
+        if (a < b) {
+            if (typeof done == 'function') done()
+            return
+        }
+    }
+    catch (err) {
+    }
+
     const infile = fs.createReadStream(filename, { encoding: 'utf8' })
     const parser = new Parse5.ParserStream
 
