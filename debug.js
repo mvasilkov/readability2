@@ -76,7 +76,7 @@ function run(filename) {
 
     connect(r, parser)
 
-    parser.on('finish', function () {
+    parser.once('finish', function () {
         const needle = r.compute()
         console.log('Found %s with score of %s', needle.node.tagName, needle.sum)
         writePage(r, needle)
