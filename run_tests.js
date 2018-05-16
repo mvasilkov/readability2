@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const Parse5 = require('parse5')
-const levenshtein = require('js-levenshtein')
+const { levenshtein } = require('@mvasilkov/levenshtein')
 const { promisify } = require('util')
 
 const { Readability } = require('./javascript/Readability')
