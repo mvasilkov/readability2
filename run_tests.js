@@ -1,3 +1,4 @@
+const chalk = require('chalk')
 const fs = require('fs')
 const jsonfile = require('jsonfile')
 const path = require('path')
@@ -68,9 +69,17 @@ function report() {
     names.forEach(a => {
         const kBefore = before.files[a] ? before.files[a].k : NaN
         const kAfter = results.files[a] ? results.files[a].k : NaN
-        const kChange = (kAfter - kBefore) / kBefore * 100
-        tab.push([a, format(kBefore), format(kAfter), format(kChange) + '%'])
+        let kChange = (kAfter - kBefore) / kBefore * 100
+        if (kAfter < kBefore && kChange > 0) kChange = -kChange
+        tab.push([a, formatNegative(kBefore), formatNegative(kAfter), formatChange(kChange)])
     })
+
+    const kBefore = before.total.k
+    const kAfter = results.total.k
+    let kChange = (kAfter - kBefore) / kBefore * 100
+    if (kAfter < kBefore && kChange > 0) kChange = -kChange
+    tab.push([chalk.cyan('Total'), formatNegative(kBefore), formatNegative(kAfter), formatChange(kChange)])
+
     return tab
 }
 
@@ -92,6 +101,16 @@ function hasSuffix(suffix) {
 
 function format(n) {
     return isFinite(n) ? n.toFixed(2) : ' '
+}
+
+function formatNegative(n) {
+    const a = format(n)
+    return n < 0 ? chalk.bgRed(a) : a
+}
+
+function formatChange(n) {
+    const a = format(n) + '%'
+    return n > 0 ? chalk.bgGreen(a) : n < 0 ? chalk.bgRed(a) : a
 }
 
 if (require.main === module) {
