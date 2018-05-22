@@ -2,6 +2,7 @@ import { IReader } from './IReader'
 import { ContentVariety, Node } from './Node'
 import { Text } from './Text'
 import { Newline } from './Newline'
+import { parseInlineStyles } from './functions'
 import { junk } from './grouping'
 
 export class Reader implements IReader {
@@ -41,10 +42,21 @@ export class Reader implements IReader {
     onattribute(name: string, value: string) {
         name = name.toLowerCase()
 
+        if (name.startsWith('data-modal-')) {
+            this._cur.variety |= ContentVariety.bad
+            return
+        }
+
         switch (name) {
             case 'href':
                 if (this._cur.tagName == 'a')
                     this._cur.variety |= ContentVariety.hyperlink
+                break
+
+            case 'style':
+                const style = parseInlineStyles(value)
+                if (style.display == 'none')
+                    this._cur.variety |= ContentVariety.bad
         }
     }
 

@@ -18,7 +18,7 @@ function tabEntry(title, before, after) {
     const kBefore = before ? before.k : NaN
     const kAfter = after ? after.k : NaN
     let kChange = (kAfter - kBefore) / kBefore * 100
-    if (kAfter < kBefore && kChange > 0) kChange = -kChange
+    if (Math.sign(kAfter - kBefore) != Math.sign(kChange)) kChange = -kChange
     return [title, formatNegative(kBefore), formatNegative(kAfter), formatChange(kChange)]
 }
 
