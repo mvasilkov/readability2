@@ -1,4 +1,3 @@
-const chalk = require('chalk')
 const fs = require('fs')
 const jsonfile = require('jsonfile')
 const path = require('path')
@@ -10,6 +9,7 @@ const { promisify } = require('util')
 const { Readability } = require('./javascript/Readability')
 const { connect } = require('./javascript/coupling/parse5')
 const { repair } = require('./repair')
+const { report } = require('./testing_things/report_tab')
 
 const PAGES_DIR = `${__dirname}/r2_test_pages`
 
@@ -31,7 +31,9 @@ function run() {
         results.total.k = k / files.length
 
         jsonfile.writeFileSync(`${__dirname}/score.json`, results, { spaces: 2 })
-        console.log(table(report()))
+        const saved = jsonfile.readFileSync(`${PAGES_DIR}/score.json`)
+
+        console.log(table(report(saved, results)))
         console.log('Done')
     })
 }
@@ -59,30 +61,6 @@ function comparePage(filename, done) {
     file.pipe(parser)
 }
 
-function report() {
-    const before = jsonfile.readFileSync(`${PAGES_DIR}/score.json`)
-
-    let names = Object.keys(before.files).concat(Object.keys(results.files))
-    names = Array.from(new Set(names))
-
-    const tab = []
-    names.forEach(a => {
-        const kBefore = before.files[a] ? before.files[a].k : NaN
-        const kAfter = results.files[a] ? results.files[a].k : NaN
-        let kChange = (kAfter - kBefore) / kBefore * 100
-        if (kAfter < kBefore && kChange > 0) kChange = -kChange
-        tab.push([a, formatNegative(kBefore), formatNegative(kAfter), formatChange(kChange)])
-    })
-
-    const kBefore = before.total.k
-    const kAfter = results.total.k
-    let kChange = (kAfter - kBefore) / kBefore * 100
-    if (kAfter < kBefore && kChange > 0) kChange = -kChange
-    tab.push([chalk.cyan('Total'), formatNegative(kBefore), formatNegative(kAfter), formatChange(kChange)])
-
-    return tab
-}
-
 function isFile(file) {
     return fs.statSync(file).isFile()
 }
@@ -97,20 +75,6 @@ function lsFiles(dir) {
 
 function hasSuffix(suffix) {
     return file => path.extname(file) == suffix
-}
-
-function format(n) {
-    return isFinite(n) ? n.toFixed(2) : ' '
-}
-
-function formatNegative(n) {
-    const a = format(n)
-    return n < 0 ? chalk.bgRed(a) : a
-}
-
-function formatChange(n) {
-    const a = format(n) + '%'
-    return n > 0 ? chalk.bgGreen(a) : n < 0 ? chalk.bgRed(a) : a
 }
 
 if (require.main === module) {
