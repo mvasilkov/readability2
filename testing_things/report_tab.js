@@ -10,8 +10,11 @@ function formatNegative(n) {
 }
 
 function formatChange(n) {
-    const a = format(n) + '%'
-    return n > 0 ? chalk.bgGreen(a) : n < 0 ? chalk.bgRed(a) : a
+    if (isFinite(n)) {
+        const a = format(n) + '%'
+        return n > 0 ? chalk.bgGreen(a) : n < 0 ? chalk.bgRed(a) : a
+    }
+    return ' '
 }
 
 function tabEntry(title, before, after) {

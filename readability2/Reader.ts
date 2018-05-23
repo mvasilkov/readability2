@@ -26,9 +26,11 @@ export class Reader implements IReader {
         if (this._cur.tagName != name || this._cur.parentNode == null)
             throw Error('onclosetag: Not balanced')
 
+        const trash = this._cur.trash
+
         this._cur = this._cur.parentNode
 
-        if (junk.has(name)) {
+        if (trash || junk.has(name)) {
             this._cur.childNodes.pop()
             return
         }
@@ -51,6 +53,11 @@ export class Reader implements IReader {
             case 'href':
                 if (this._cur.tagName == 'a')
                     this._cur.variety |= ContentVariety.hyperlink
+                break
+
+            case 'module':
+                if (this._cur.tagName == 'air') // vc.ru
+                    this._cur.trash = true
                 break
 
             case 'style':

@@ -19,6 +19,7 @@ export class Node implements INode {
     sum: number | undefined
 
     variety: number = ContentVariety.normal
+    trash: boolean = false
 
     constructor(tagName: string) {
         this.tagName = tagName
