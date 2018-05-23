@@ -20,10 +20,10 @@ function replaceNewlines(entireLength: number) {
 }
 
 const chars = [' ', '\t', '\r', '\n']
-const re = RegExp(`(?:${chars.join('|')}){2,}`, 'g')
+const space = RegExp(`(?:${chars.join('|')}){2,}`, 'g')
 
 export function normalizeSpace(a: string): string {
-    return a.replace(re, replaceNewlines(a.length))
+    return a.replace(space, replaceNewlines(a.length))
 }
 
 export function parseInlineStyles(css: string): { [prop: string]: string } {

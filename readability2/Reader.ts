@@ -5,6 +5,9 @@ import { Newline } from './Newline'
 import { parseInlineStyles } from './functions'
 import { junk } from './grouping'
 
+const chars = ['-', '_']
+const comment = RegExp(`^comment(?=${chars.join('|')})`)
+
 export class Reader implements IReader {
     readonly root: Node
     private _cur: Node
@@ -53,6 +56,11 @@ export class Reader implements IReader {
             case 'href':
                 if (this._cur.tagName == 'a')
                     this._cur.variety |= ContentVariety.hyperlink
+                break
+
+            case 'id':
+                if (comment.test(value))
+                    this._cur.variety |= ContentVariety.bad
                 break
 
             case 'module':
