@@ -1,5 +1,7 @@
 import { Declaration } from 'postcss'
 
+import { regexp } from './tuning'
+
 function replaceNewlines(entireLength: number) {
     return function (a: string, p: number): string {
         if (p == 0 || p + a.length == entireLength)
@@ -19,11 +21,8 @@ function replaceNewlines(entireLength: number) {
     }
 }
 
-const chars = [' ', '\t', '\r', '\n']
-const space = RegExp(`(?:${chars.join('|')}){2,}`, 'g')
-
 export function normalizeSpace(a: string): string {
-    return a.replace(space, replaceNewlines(a.length))
+    return a.replace(regexp.space, replaceNewlines(a.length))
 }
 
 export function parseInlineStyles(css: string): { [prop: string]: string } {

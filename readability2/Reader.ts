@@ -4,9 +4,7 @@ import { Text } from './Text'
 import { Newline } from './Newline'
 import { parseInlineStyles } from './functions'
 import { junk } from './grouping'
-
-const chars = ['-', '_']
-const comment = RegExp(`^comment(?=${chars.join('|')})`)
+import { regexp } from './tuning'
 
 export class Reader implements IReader {
     readonly root: Node
@@ -59,7 +57,7 @@ export class Reader implements IReader {
                 break
 
             case 'id':
-                if (comment.test(value))
+                if (regexp.comment.test(value))
                     this._cur.variety |= ContentVariety.bad
                 break
 

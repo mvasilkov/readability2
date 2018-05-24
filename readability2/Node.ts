@@ -1,5 +1,6 @@
 import { INode } from './INode'
 import { block } from './grouping'
+import { badMultiplier } from './tuning'
 
 export const enum ContentVariety {
     normal = 0,
@@ -19,7 +20,7 @@ export class Node implements INode {
     sum: number | undefined
 
     variety: number = ContentVariety.normal
-    trash: boolean = false
+    trash: boolean = false // used by Reader
 
     constructor(tagName: string) {
         this.tagName = tagName
@@ -54,7 +55,7 @@ export class Node implements INode {
         this.score = this.chars / this.tags * Math.log2((this.chars + 1) / (this.hyperchars + 1))
 
         if (this.ofVariety(ContentVariety.bad))
-            this.score *= 0.1
+            this.score *= badMultiplier
 
         if (this.sum > needle.sum)
             needle.node = this, needle.sum = this.sum
