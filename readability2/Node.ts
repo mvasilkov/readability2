@@ -1,6 +1,6 @@
 import { INode } from './INode'
 import { block } from './grouping'
-import { badMultiplier } from './tuning'
+import { badMultiplier, peelMultiplier } from './tuning'
 
 export const enum ContentVariety {
     normal = 0,
@@ -59,6 +59,10 @@ export class Node implements INode {
 
         if (this.sum > needle.sum)
             needle.node = this, needle.sum = this.sum
+    }
+
+    canPeel() {
+        return (this.tags as number) > (this.score as number) * peelMultiplier
     }
 
     ofVariety(variety: ContentVariety.hyperlink | ContentVariety.bad): boolean {

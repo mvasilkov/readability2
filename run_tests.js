@@ -9,7 +9,7 @@ const { promisify } = require('util')
 const { Readability } = require('./javascript/Readability')
 const { connect } = require('./javascript/coupling/parse5')
 const { repair } = require('./repair')
-const { report } = require('./testing_things/report_tab')
+const { report } = require('./testing/report_tab')
 
 const PAGES_DIR = `${__dirname}/r2_test_pages`
 

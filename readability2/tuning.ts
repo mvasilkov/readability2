@@ -1,5 +1,7 @@
 export const badMultiplier = 0.1
 
+export const peelMultiplier = 1.1
+
 const a = [' ', '\t', '\r', '\n']
 const space = RegExp(`(?:${a.join('|')}){2,}`, 'g')
 

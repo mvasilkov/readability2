@@ -17,6 +17,10 @@ export class Newline implements INode {
     compute() {
     }
 
+    canPeel() {
+        return true
+    }
+
     toString() {
         return '\n'
     }

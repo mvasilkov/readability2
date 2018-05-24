@@ -1,3 +1,4 @@
+import { Cleaner } from './Cleaner'
 import { IReader } from './IReader'
 import { Reader } from './Reader'
 import { INode } from './INode'
@@ -12,6 +13,8 @@ export class Readability {
     readonly ontext: (content: string) => void
 
     _needle: { node: INode, sum: number } | null = null
+
+    _cleaner: Cleaner | undefined
 
     constructor() {
         const r = this.reader = new Reader
@@ -32,6 +35,10 @@ export class Readability {
     clean(): string {
         if (this._needle == null)
             return ''
-        return normalizeSpace(this._needle.node.toString())
+
+        if (this._cleaner == null)
+            this._cleaner = new Cleaner(this._needle.node)
+
+        return normalizeSpace(this._cleaner.root.toString())
     }
 }

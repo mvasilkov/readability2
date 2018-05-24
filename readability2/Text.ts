@@ -19,6 +19,10 @@ export class Text implements INode {
         this.hyperchars = +this.parentNode!.ofVariety(ContentVariety.hyperlink) * this.chars
     }
 
+    canPeel() {
+        return this.chars == 0
+    }
+
     toString() {
         return this.textContent
     }
