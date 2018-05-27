@@ -10,6 +10,7 @@ const { Readability } = require('./javascript/Readability')
 const { connect } = require('./javascript/coupling/parse5')
 const { repair } = require('./repair')
 const { report } = require('./testing/report_tab')
+const { printdiff } = require('./testing/print_diff')
 
 const PAGES_DIR = `${__dirname}/r2_test_pages`
 
@@ -50,10 +51,14 @@ function comparePage(filename, done) {
 
     parser.once('finish', function () {
         r.compute()
-        const n = levenshtein(r.clean() + '\n', ref)
+        const out = r.clean() + '\n'
+        const n = levenshtein(out, ref)
         const k = (ref.length - n) / ref.length * 100
 
         console.log(`* ${a}.html k=${k.toFixed(2)}`)
+        if (n && process.argv[2] == '-v')
+            printdiff(ref, out)
+
         results.files[a] = { k }
         done(null, filename)
     })
