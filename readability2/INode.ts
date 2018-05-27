@@ -9,7 +9,7 @@ export interface INode {
     compute(): void
     compute(needle: { node: INode, sum: number }): void
 
-    canPeel(): boolean
+    canReject(): boolean
 
     toString(): string
 }

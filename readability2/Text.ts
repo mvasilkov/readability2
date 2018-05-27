@@ -19,7 +19,7 @@ export class Text implements INode {
         this.hyperchars = +this.parentNode!.ofVariety(ContentVariety.hyperlink) * this.chars
     }
 
-    canPeel() {
+    canReject() {
         return this.chars == 0
     }
 

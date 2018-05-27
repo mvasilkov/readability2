@@ -1,6 +1,7 @@
 import { INode } from './INode'
+import { IComputedNode } from './IComputedNode'
 import { block } from './grouping'
-import { badMultiplier, peelMultiplier } from './tuning'
+import { badMultiplier, rejectMultiplier, rejectCutoff } from './tuning'
 
 export const enum ContentVariety {
     normal = 0,
@@ -61,12 +62,30 @@ export class Node implements INode {
             needle.node = this, needle.sum = this.sum
     }
 
-    canPeel() {
-        return (this.tags as number) > (this.score as number) * peelMultiplier
-    }
-
     ofVariety(variety: ContentVariety.hyperlink | ContentVariety.bad): boolean {
         return (this.variety & variety) != 0
+    }
+
+    canReject(this: IComputedNode) {
+        return (this.score < rejectCutoff || this.tags > this.score * rejectMultiplier) &&
+            this.lowersParentScore()
+    }
+
+    lowersParentScore(this: IComputedNode): boolean {
+        if (this.parentNode == null)
+            return false
+
+        const parent = this.parentNode
+        const score = parent.score
+        const index = parent.childNodes.indexOf(this)
+
+        parent.childNodes.splice(index, 1)
+        parent.compute()
+        parent.childNodes.splice(index, 0, this)
+
+        const result = score < parent.score
+        parent.score = score
+        return result
     }
 
     toString() {

@@ -17,7 +17,7 @@ export class Newline implements INode {
     compute() {
     }
 
-    canPeel() {
+    canReject() {
         return true
     }
 
