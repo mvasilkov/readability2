@@ -1,14 +1,13 @@
-import { INode } from './INode'
-import { ContentVariety, Node } from './Node'
+import { ContentVariety, IContainerNode, INode } from './types'
 
 export class Text implements INode {
-    parentNode: Node | null = null
+    parentNode: IContainerNode | null = null
     textContent: string
 
-    chars: number | undefined
-    hyperchars: number | undefined
-    readonly tags: number | undefined
-    readonly score: number | undefined
+    chars!: number
+    hyperchars!: number
+    readonly tags!: number
+    readonly score!: number
 
     constructor(textContent: string) {
         this.textContent = textContent
