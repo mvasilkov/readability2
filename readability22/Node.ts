@@ -1,39 +1,30 @@
-import { INode } from './INode'
-import { IComputedNode } from './IComputedNode'
-import { Text } from './Text'
+import { ContentVariety, IContainerNode, INode, Result } from './types'
 import { block } from './grouping'
-import { badMultiplier, rejectMultiplier, rejectCutoff } from './tuning'
+import { badMultiplier, rejectCutoff, rejectMultiplier } from './tuning'
 
-export const enum ContentVariety {
-    normal = 0,
-    hyperlink = 1,
-    bad = 2,
-}
-
-export class Node implements INode {
-    parentNode: Node | null = null
+export class Node implements IContainerNode {
+    parentNode: IContainerNode | null = null
     childNodes: INode[] = []
     readonly tagName: string
 
-    chars: number | undefined
-    hyperchars: number | undefined
-    tags: number | undefined
-    score: number | undefined
-    sum: number | undefined
+    chars!: number
+    hyperchars!: number
+    tags!: number
+    score!: number
+    sum!: number
 
     variety: number = ContentVariety.normal
-    trash: boolean = false // used by Reader
 
     constructor(tagName: string) {
         this.tagName = tagName
     }
 
-    appendChild<N extends INode>(n: N): N {
-        if (n.parentNode !== null)
+    appendChild<NT extends INode>(node: NT): NT {
+        if (node.parentNode !== null)
             throw Error('appendChild: Attempted reparenting')
-        n.parentNode = this
-        this.childNodes.push(n)
-        return n
+        node.parentNode = this
+        this.childNodes.push(node)
+        return node
     }
 
     lastChild(): INode | null {
@@ -42,16 +33,16 @@ export class Node implements INode {
         return this.childNodes[this.childNodes.length - 1]
     }
 
-    compute(needle: { node: INode, sum: number } = { node: InfinityNode, sum: Infinity }) {
+    compute(result: Result = { node: InfinityNode, sum: Infinity }): void {
         this.chars = this.hyperchars = this.sum = 0
         this.tags = 1
 
         this.childNodes.forEach(n => {
-            n.compute(needle)
-            this.chars += n.chars as any
-            this.hyperchars += n.hyperchars as any
-            this.tags += n.tags as any
-            this.sum += n.score as any
+            n.compute(result)
+            this.chars += n.chars
+            this.hyperchars += n.hyperchars
+            this.tags += n.tags
+            this.sum += n.score
         })
 
         this.score = this.chars / this.tags * Math.log2((this.chars + 1) / (this.hyperchars + 1))
@@ -59,21 +50,21 @@ export class Node implements INode {
         if (this.ofVariety(ContentVariety.bad))
             this.score *= badMultiplier
 
-        if (this.sum > needle.sum)
-            needle.node = this, needle.sum = this.sum
+        if (this.sum > result.sum)
+            result.node = this, result.sum = this.sum
     }
 
     ofVariety(variety: ContentVariety.hyperlink | ContentVariety.bad): boolean {
         return (this.variety & variety) != 0
     }
 
-    canReject(this: IComputedNode) {
+    canReject(): boolean {
         return (this.score < rejectCutoff || this.tags > this.score * rejectMultiplier) &&
             this.lowersParentScore()
     }
 
-    lowersParentScore(this: IComputedNode): boolean {
-        if (this.parentNode == null)
+    lowersParentScore(): boolean {
+        if (this.parentNode === null)
             return false
 
         const parent = this.parentNode
@@ -89,7 +80,7 @@ export class Node implements INode {
         return result
     }
 
-    containsText(this: IComputedNode): boolean {
+    containsText(): boolean {
         let chars = 0
         this.childNodes.forEach(n => {
             if (n instanceof Text)
