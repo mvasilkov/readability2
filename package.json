@@ -17,6 +17,7 @@
     "parse5": "^4.0.0",
     "postcss": "^6.0.22",
     "systematize": "^3.0.1",
-    "table": "^4.0.3"
+    "table": "^4.0.3",
+    "yargs-parser": "^10.0.0"
   }
 }

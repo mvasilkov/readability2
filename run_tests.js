@@ -16,27 +16,37 @@ const PAGES_DIR = `${__dirname}/r2_test_pages`
 
 const results = { files: {}, total: {} }
 
+let argv = {}
+
 function run() {
     const _repair = promisify(repair)
     const _comparePage = promisify(comparePage)
 
-    const files = lsFiles(`${PAGES_DIR}/html`).filter(hasSuffix('.html'))
+    function matchName() {
+        return true
+    }
+
+    if (argv.m) {
+        matchName = a => a.includes(argv.m)
+    }
+
+    const files = lsFiles(`${PAGES_DIR}/html`).filter(hasSuffix('.html')).filter(matchName)
 
     Promise.all(files.map(filename => _repair(filename).then(_comparePage)))
-    .then(function () {
-        let k = 0
-        files.forEach(filename => {
-            const a = path.basename(filename, '.html')
-            k += results.files[a].k
+        .then(function () {
+            let k = 0
+            files.forEach(filename => {
+                const a = path.basename(filename, '.html')
+                k += results.files[a].k
+            })
+            results.total.k = k / files.length
+
+            jsonfile.writeFileSync(`${__dirname}/score.json`, results, { spaces: 2 })
+            const saved = jsonfile.readFileSync(`${PAGES_DIR}/score.json`)
+
+            console.log(table(report(saved, results)))
+            console.log('Done')
         })
-        results.total.k = k / files.length
-
-        jsonfile.writeFileSync(`${__dirname}/score.json`, results, { spaces: 2 })
-        const saved = jsonfile.readFileSync(`${PAGES_DIR}/score.json`)
-
-        console.log(table(report(saved, results)))
-        console.log('Done')
-    })
 }
 
 function comparePage(filename, done) {
@@ -56,7 +66,7 @@ function comparePage(filename, done) {
         const k = (ref.length - n) / ref.length * 100
 
         console.log(`* ${a}.html k=${k.toFixed(2)}`)
-        if (n && process.argv[2] == '-v')
+        if (argv.v)
             printdiff(ref, out)
 
         results.files[a] = { k }
@@ -83,5 +93,6 @@ function hasSuffix(suffix) {
 }
 
 if (require.main === module) {
+    argv = require('yargs-parser')(process.argv.slice(2))
     run()
 }
