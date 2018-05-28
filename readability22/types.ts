@@ -31,6 +31,9 @@ export interface IContainerNode extends INode {
 
     sum: number
 
+    variety: number
+    trash: boolean
+
     appendChild<NT extends INode>(node: NT): NT
 
     lastChild(): INode | null

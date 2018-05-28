@@ -3,7 +3,7 @@ import { block } from './grouping'
 import { badMultiplier, rejectCutoff, rejectMultiplier } from './tuning'
 
 export class Node implements IContainerNode {
-    parentNode: IContainerNode | null = null
+    parentNode: Node | null = null
     childNodes: INode[] = []
     readonly tagName: string
 
@@ -14,6 +14,7 @@ export class Node implements IContainerNode {
     sum!: number
 
     variety: number = ContentVariety.normal
+    trash: boolean = false
 
     constructor(tagName: string) {
         this.tagName = tagName
@@ -33,11 +34,14 @@ export class Node implements IContainerNode {
         return this.childNodes[this.childNodes.length - 1]
     }
 
-    compute(result: Result = { node: InfinityNode, sum: Infinity }): void {
+    compute(result: Result = { node: InfinityNode, sum: Infinity }, without?: Node): void {
         this.chars = this.hyperchars = this.sum = 0
         this.tags = 1
 
         this.childNodes.forEach(n => {
+            if (without === n)
+                return
+
             n.compute(result)
             this.chars += n.chars
             this.hyperchars += n.hyperchars
@@ -67,16 +71,10 @@ export class Node implements IContainerNode {
         if (this.parentNode === null)
             return false
 
-        const parent = this.parentNode
-        const score = parent.score
-        const index = parent.childNodes.indexOf(this)
-
-        parent.childNodes.splice(index, 1)
-        parent.compute()
-        parent.childNodes.splice(index, 0, this)
-
-        const result = score < parent.score
-        parent.score = score
+        const savedScore = this.parentNode.score
+        this.parentNode.compute(undefined, this)
+        const result = savedScore < this.parentNode.score
+        this.parentNode.score = savedScore
         return result
     }
 
