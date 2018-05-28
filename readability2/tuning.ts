@@ -4,6 +4,8 @@ export const rejectMultiplier = 1.1
 
 export const rejectCutoff = 9
 
+export const rootMultiplier = 0.999
+
 const a = [' ', '\t', '\r', '\n', '\u00a0']
 const space = RegExp(`(?:${a.join('|')}){2,}`, 'g')
 

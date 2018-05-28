@@ -1,5 +1,6 @@
 import { INode } from './INode'
 import { IComputedNode } from './IComputedNode'
+import { Text } from './Text'
 import { block } from './grouping'
 import { badMultiplier, rejectMultiplier, rejectCutoff } from './tuning'
 
@@ -86,6 +87,15 @@ export class Node implements INode {
         const result = score < parent.score
         parent.score = score
         return result
+    }
+
+    containsText(this: IComputedNode): boolean {
+        let chars = 0
+        this.childNodes.forEach(n => {
+            if (n instanceof Text)
+                chars += n.chars
+        })
+        return chars > this.chars * 0.5
     }
 
     toString() {
