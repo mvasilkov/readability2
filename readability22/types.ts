@@ -5,7 +5,7 @@ export const enum ContentVariety {
 }
 
 export type Result = {
-    node: IContainerNode,
+    node?: IContainerNode,
     sum: number,
 }
 
@@ -41,4 +41,13 @@ export interface IContainerNode extends INode {
     ofVariety(variety: ContentVariety.hyperlink | ContentVariety.bad): boolean
 
     containsText(): boolean
+}
+
+export interface IReader {
+    root: IContainerNode
+
+    onopentag(name: string): void
+    onclosetag(name: string): void
+    onattribute(name: string, value: string): void
+    ontext(content: string): void
 }

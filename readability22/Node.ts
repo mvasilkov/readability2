@@ -34,7 +34,7 @@ export class Node implements IContainerNode {
         return this.childNodes[this.childNodes.length - 1]
     }
 
-    compute(result: Result = { node: InfinityNode, sum: Infinity }, without?: Node): void {
+    compute(result: Result = { sum: Infinity }, without?: Node): void {
         this.chars = this.hyperchars = this.sum = 0
         this.tags = 1
 
@@ -96,5 +96,3 @@ export class Node implements IContainerNode {
         return parts.join('')
     }
 }
-
-const InfinityNode = new Node('Infinity')

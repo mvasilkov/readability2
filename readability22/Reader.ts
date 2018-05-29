@@ -1,5 +1,5 @@
-import { IReader } from './IReader'
-import { ContentVariety, Node } from './Node'
+import { ContentVariety, IContainerNode, IReader } from './types'
+import { Node } from './Node'
 import { Text } from './Text'
 import { Newline } from './Newline'
 import { parseInlineStyles } from './functions'
@@ -7,8 +7,8 @@ import { junk } from './grouping'
 import { regexp } from './tuning'
 
 export class Reader implements IReader {
-    readonly root: Node
-    private _cur: Node
+    readonly root: IContainerNode
+    private _cur: IContainerNode
 
     constructor() {
         this._cur = this.root = new Node('---')
