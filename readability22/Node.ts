@@ -1,6 +1,6 @@
 import { ContentVariety, IContainerNode, INode, Result } from './types'
 import { block } from './grouping'
-import { badMultiplier, rejectCutoff, rejectMultiplier } from './tuning'
+import { badMultiplier, rejectScore } from './tuning'
 
 export class Node implements IContainerNode {
     parentNode: Node | null = null
@@ -63,7 +63,7 @@ export class Node implements IContainerNode {
     }
 
     canReject(): boolean {
-        return (this.score < rejectCutoff || this.tags > this.score * rejectMultiplier) &&
+        return (this.score < rejectScore || this.tags > this.score + 1) &&
             this.lowersParentScore()
     }
 

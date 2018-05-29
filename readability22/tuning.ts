@@ -1,8 +1,6 @@
 export const badMultiplier = 0.1
 
-export const rejectMultiplier = 1.1
-
-export const rejectCutoff = 9
+export const rejectScore = 9
 
 export const rootMultiplier = 0.999
 
