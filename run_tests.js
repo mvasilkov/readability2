@@ -10,7 +10,7 @@ const { Readability } = require('./javascript/Readability')
 const { connect } = require('./javascript/coupling/parse5')
 const repair = require('./x/repair')
 const { report } = require('./testing/report_tab')
-const printdiff = require('./x/compare')
+const compare = require('./x/compare')
 
 const PAGES_DIR = `${__dirname}/r2_test_pages`
 
@@ -33,20 +33,20 @@ function run() {
     const files = lsFiles(`${PAGES_DIR}/html`).filter(hasSuffix('.html')).filter(matchName)
 
     Promise.all(files.map(filename => _repair(filename).then(_comparePage)))
-        .then(function () {
-            let k = 0
-            files.forEach(filename => {
-                const a = path.basename(filename, '.html')
-                k += results.files[a].k
-            })
-            results.total.k = k / files.length
-
-            jsonfile.writeFileSync(`${__dirname}/score.json`, results, { spaces: 2 })
-            const saved = jsonfile.readFileSync(`${PAGES_DIR}/score.json`)
-
-            console.log(table(report(saved, results)))
-            console.log('Done')
+    .then(function () {
+        let k = 0
+        files.forEach(filename => {
+            const a = path.basename(filename, '.html')
+            k += results.files[a].k
         })
+        results.total.k = k / files.length
+
+        jsonfile.writeFileSync(`${__dirname}/score.json`, results, { spaces: 2 })
+        const saved = jsonfile.readFileSync(`${PAGES_DIR}/score.json`)
+
+        console.log(table(report(saved, results)))
+        console.log('Done')
+    })
 }
 
 function comparePage(filename, done) {
@@ -60,14 +60,11 @@ function comparePage(filename, done) {
     connect(r, parser)
 
     parser.once('finish', function () {
-        r.compute()
-        const out = r.clean() + '\n'
-        const n = levenshtein(out, ref)
-        const k = (ref.length - n) / ref.length * 100
+        console.log(`* ${a}.html`)
 
-        console.log(`* ${a}.html k=${k.toFixed(2)}`)
-        if (argv.v)
-            printdiff(ref, out)
+        r.compute()
+        const out = `===\n\n${r.clean()}\n`
+        const k = compare(ref, out, argv.v)
 
         results.files[a] = { k }
         done(null, filename)
