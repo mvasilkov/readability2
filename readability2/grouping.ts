@@ -1,4 +1,4 @@
-export const junk: Set<string> = new Set([
+export const junk = new Set([
     'applet',
     'canvas',
     'embed',
@@ -18,7 +18,7 @@ export const junk: Set<string> = new Set([
     'template',
 ])
 
-export const av: Set<string> = new Set([
+export const av = new Set([
     'audio',
     'figcaption',
     'figure',
@@ -28,7 +28,7 @@ export const av: Set<string> = new Set([
     'video',
 ])
 
-export const block: Set<string> = new Set([
+export const block = new Set([
     'address',
     'article',
     'aside',
@@ -53,7 +53,7 @@ export const block: Set<string> = new Set([
     'section',
 ])
 
-export const autoclose: Set<string> = new Set([
+export const autoclose = new Set([
     'area',
     'base',
     'br',

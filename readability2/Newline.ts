@@ -1,13 +1,12 @@
-import { INode } from './INode'
-import { Node } from './Node'
+import { IContainerNode, INode } from './types'
 
 export class Newline implements INode {
-    parentNode: Node | null = null
+    parentNode: IContainerNode | null = null
 
-    readonly chars: number | undefined
-    readonly hyperchars: number | undefined
-    readonly tags: number | undefined
-    readonly score: number | undefined
+    readonly chars!: number
+    readonly hyperchars!: number
+    readonly tags!: number
+    readonly score!: number
 
     private constructor() {
     }
