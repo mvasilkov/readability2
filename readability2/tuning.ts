@@ -2,7 +2,7 @@ export const badMultiplier = 0.1
 
 export const rejectScore = 9
 
-export const rootMultiplier = 0.999
+export const rootMultiplier = 0.996
 
 const a = [' ', '\t', '\r', '\n', '\u00a0']
 const space = RegExp(`(?:${a.join('|')}){2,}`, 'g')

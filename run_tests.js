@@ -8,9 +8,9 @@ const { promisify } = require('util')
 
 const { Readability } = require('./javascript/Readability')
 const { connect } = require('./javascript/coupling/parse5')
-const { repair } = require('./repair')
+const repair = require('./x/repair')
 const { report } = require('./testing/report_tab')
-const { printdiff } = require('./testing/print_diff')
+const printdiff = require('./x/compare')
 
 const PAGES_DIR = `${__dirname}/r2_test_pages`
 

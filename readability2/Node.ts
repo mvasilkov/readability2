@@ -1,4 +1,5 @@
 import { ContentVariety, IContainerNode, INode, Result } from './types'
+import { Text } from './Text'
 import { block } from './grouping'
 import { badMultiplier, rejectScore } from './tuning'
 
