@@ -6,6 +6,7 @@ const jsdiff = require('diff')
 const { levenshtein } = require('@mvasilkov/levenshtein')
 
 const readability2 = require('./cli')
+const { testingString } = require('./utils')
 
 const PAGES_DIR = `${__dirname}/../r2_test_pages`
 
@@ -20,7 +21,7 @@ function compare(a, b, print) {
 
 function run(name) {
     readability2(`${PAGES_DIR}/html/${name}.html.repair`, function (err, filename, r) {
-        const out = `===\n\n${r.clean()}\n`
+        const out = testingString(r)
         const ref = fs.readFileSync(`${PAGES_DIR}/txt/${name}.txt`, { encoding: 'utf8' })
         compare(ref, out, true)
     })

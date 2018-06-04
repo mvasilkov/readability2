@@ -3,14 +3,14 @@ const jsonfile = require('jsonfile')
 const path = require('path')
 const Parse5 = require('parse5')
 const { levenshtein } = require('@mvasilkov/levenshtein')
-const { table } = require('table')
 const { promisify } = require('util')
 
 const { Readability } = require('./javascript/Readability')
 const { connect } = require('./javascript/coupling/parse5')
 const repair = require('./x/repair')
-const { report } = require('./testing/report_tab')
+const report = require('./x/report')
 const compare = require('./x/compare')
+const { testingString } = require('./x/utils')
 
 const PAGES_DIR = `${__dirname}/r2_test_pages`
 
@@ -44,7 +44,7 @@ function run() {
         jsonfile.writeFileSync(`${__dirname}/score.json`, results, { spaces: 2 })
         const saved = jsonfile.readFileSync(`${PAGES_DIR}/score.json`)
 
-        console.log(table(report(saved, results)))
+        report(saved, results, true)
         console.log('Done')
     })
 }
@@ -63,7 +63,7 @@ function comparePage(filename, done) {
         console.log(`* ${a}.html`)
 
         r.compute()
-        const out = `===\n\n${r.clean()}\n`
+        const out = testingString(r)
         const k = compare(ref, out, argv.v)
 
         results.files[a] = { k }
