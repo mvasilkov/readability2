@@ -1,11 +1,12 @@
+#!/usr/bin/env node
+
 const fs = require('fs')
 const he = require('he')
 const opn = require('opn')
-const Parse5 = require('parse5')
 
-const { Readability } = require('./javascript/Readability')
-const { Newline } = require('./javascript/Newline')
-const { connect } = require('./javascript/coupling/parse5')
+const { Newline } = require('../javascript/Newline')
+const readability2 = require('./cli')
+const { testingString } = require('./utils')
 
 const hyperlink = 1
 const bad = 2
@@ -16,10 +17,10 @@ function useless(string) {
     return true
 }
 
-function writeTab(node, needle, tab, level) {
+function writeTab(node, result, result2, tab, level) {
     let nope = false
 
-    let className = node === needle.node ? 'needle' : ''
+    let className = (node === result || node === result2) ? 'result' : ''
     if (typeof node.ofVariety == 'function') {
         if (node.ofVariety(hyperlink)) className += ' hyperlink'
         if (node.ofVariety(bad)) className += ' bad'
@@ -36,7 +37,7 @@ function writeTab(node, needle, tab, level) {
             a += he.encode(node.textContent)
     }
     else if (node.constructor === Newline)
-        a += '<code>br</code>'
+        a += String.raw`<code>\n</code>`
     else
         throw Error('WTF')
     a += '</td><td class="score">'
@@ -52,43 +53,29 @@ function writeTab(node, needle, tab, level) {
     if (!node.childNodes) return
 
     ++level
-    node.childNodes.forEach(n => writeTab(n, needle, tab, level))
-}
-
-function writePage(r, needle) {
-    let html = fs.readFileSync(`${__dirname}/debug_files/base.html`, { encoding: 'utf8' })
-
-    let tab = ['<table>']
-    writeTab(r.reader.root, needle, tab, -1)
-    tab.push('</table>')
-
-    html = html.replace('{{ contents }}', tab.join('\n'))
-
-    const filename = `${__dirname}/debug.html`
-    fs.writeFileSync(filename, html, { encoding: 'utf8' })
-    opn(filename)
+    node.childNodes.forEach(n => writeTab(n, result, result2, tab, level))
 }
 
 function run(filename) {
-    const r = new Readability
-    const parser = new Parse5.SAXParser
-    const file = fs.createReadStream(filename, { encoding: 'utf8' })
+    readability2(filename, function (err, filename, r) {
+        process.stderr.write(testingString(r))
 
-    connect(r, parser)
+        const tab = ['<table>']
+        writeTab(r.reader.root, r._result.node, r._cleaner.root, tab, -1)
+        tab.push('</table>')
 
-    parser.once('finish', function () {
-        const needle = r.compute()
-        console.log('Found %s with score of %s', needle.node.tagName, needle.sum)
-        writePage(r, needle)
-        console.log(r.clean())
+        const html = fs.readFileSync(`${__dirname}/debug_files/base.html`, { encoding: 'utf8' })
+            .replace('{{ contents }}', tab.join('\n'))
+
+        const outfile = `${__dirname}/debug.html`
+        fs.writeFileSync(outfile, html, { encoding: 'utf8' })
+        opn(outfile)
     })
-
-    file.pipe(parser)
 }
 
 if (require.main === module) {
     if (process.argv.length != 3) {
-        console.log('Usage: node debug.js FILE')
+        console.log('Usage: debug.js FILE')
         return
     }
     run(process.argv[2])
