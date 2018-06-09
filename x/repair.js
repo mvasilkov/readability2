@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const fs = require('fs')
 const Parse5 = require('parse5')
 
@@ -33,10 +35,10 @@ function run(filename, done) {
 
 if (require.main === module) {
     if (process.argv.length != 3) {
-        console.log('Usage: node repair.js FILE')
+        console.log('Usage: repair.js FILE')
         return
     }
     run(process.argv[2])
 }
 
-module.exports.repair = run
+module.exports = run

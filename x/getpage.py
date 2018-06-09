@@ -7,7 +7,7 @@ import zlib
 from slugify import slugify
 
 FIREFOX = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:55.0) Gecko/20100101 Firefox/55.0'
-UTF8 = {'utf-8', 'utf8', 'UTF-8', 'UTF8'}
+UTF8 = {'utf-8', 'utf8'}
 
 
 def run(url):
@@ -16,8 +16,8 @@ def run(url):
     urllib.request.install_opener(op)
 
     a = slugify(url, max_length=64, word_boundary=True)
-    filename = __file__.replace('getpage.py', f'r2_test_pages/html/{a}.html')
-    filename2 = __file__.replace('getpage.py', f'r2_test_pages/txt/{a}.txt')
+    filename = __file__.replace('getpage.py', f'../r2_test_pages/html/{a}.html')
+    filename2 = __file__.replace('getpage.py', f'../r2_test_pages/txt/{a}.txt')
 
     _, headers = urllib.request.urlretrieve(url, filename)
 
@@ -29,7 +29,7 @@ def run(url):
             outfile.write(b)
 
     charset = headers.get_content_charset()
-    if charset and charset not in UTF8:
+    if charset and charset.lower() not in UTF8:
         with open(filename, 'r', encoding=charset) as infile:
             a = infile.read()
 
