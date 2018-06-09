@@ -1,4 +1,22 @@
+const fs = require('fs')
 const jsonfile = require('jsonfile')
+const path = require('path')
+
+function hasSuffix(suffix) {
+    return file => path.extname(file) == suffix
+}
+
+function isFile(file) {
+    return fs.statSync(file).isFile()
+}
+
+function prepend(dir) {
+    return file => path.join(dir, file)
+}
+
+function lsFiles(dir) {
+    return fs.readdirSync(dir).map(prepend(dir)).filter(isFile)
+}
 
 function Score(dir) {
     this.filename = `${dir || __dirname}/score.json`
@@ -27,6 +45,8 @@ function testingString(r) {
 }
 
 module.exports = {
+    hasSuffix,
+    lsFiles,
     Score,
     testingString,
 }

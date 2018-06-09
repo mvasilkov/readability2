@@ -65,7 +65,7 @@ function run(filename) {
         tab.push('</table>')
 
         const html = fs.readFileSync(`${__dirname}/debug_files/base.html`, { encoding: 'utf8' })
-            .replace('{{ contents }}', tab.join('\n'))
+        .replace('{{ contents }}', tab.join('\n'))
 
         const outfile = `${__dirname}/debug.html`
         fs.writeFileSync(outfile, html, { encoding: 'utf8' })
