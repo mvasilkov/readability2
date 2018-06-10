@@ -41,7 +41,7 @@ Score.prototype.put = function (name, k) {
 }
 
 function testingString(r) {
-    return `===\n\n${r.clean()}\n`
+    return `${r.getTitle()}\n===\n\n${r.clean()}\n`
 }
 
 module.exports = {

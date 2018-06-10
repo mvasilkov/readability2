@@ -40,4 +40,8 @@ export class Readability {
 
         return normalizeSpace(this._cleaner.root.toString())
     }
+
+    getTitle(): string {
+        return this.reader.title.getTitle()
+    }
 }

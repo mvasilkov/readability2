@@ -2,16 +2,19 @@ import { ContentVariety, IContainerNode, IReader } from './types'
 import { Node } from './Node'
 import { Text } from './Text'
 import { Newline } from './Newline'
+import { Title } from './Title'
 import { parseInlineStyles } from './functions'
-import { junk } from './grouping'
+import { heading, junk } from './grouping'
 import { regexp } from './tuning'
 
 export class Reader implements IReader {
     readonly root: IContainerNode
+    readonly title: Title
     private _cur: IContainerNode
 
     constructor() {
         this._cur = this.root = new Node('---')
+        this.title = new Title
     }
 
     onopentag(name: string) {
@@ -27,12 +30,17 @@ export class Reader implements IReader {
         if (this._cur.tagName != name || this._cur.parentNode == null)
             throw Error('onclosetag: Not balanced')
 
-        const trash = this._cur.trash
+        const end = this._cur
 
         this._cur = this._cur.parentNode
 
-        if (trash || junk.has(name)) {
+        if (end.trash || junk.has(name)) {
             this._cur.childNodes.pop()
+            return
+        }
+
+        if (heading.has(name)) {
+            this.title.append(end)
             return
         }
 

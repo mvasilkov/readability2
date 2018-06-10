@@ -45,9 +45,14 @@ export interface IContainerNode extends INode {
 
 export interface IReader {
     root: IContainerNode
+    title: ITitle
 
     onopentag(name: string): void
     onclosetag(name: string): void
     onattribute(name: string, value: string): void
     ontext(content: string): void
+}
+
+export interface ITitle {
+    getTitle(): string
 }
