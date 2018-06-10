@@ -15,9 +15,13 @@ export class Title implements ITitle {
     }
 
     append(node: IContainerNode) {
-        if (node.tagName == 'title')
+        if (node.tagName == 'title') {
             this.inputs.title = Title.normalizeTitle(node.toString())
-        else this.inputs.headings.push(Title.normalizeSpace(node.toString()))
+            return
+        }
+        const heading = Title.normalizeSpace(node.toString())
+        if (heading)
+            this.inputs.headings.push(heading)
     }
 
     getTitle(): string {
@@ -40,10 +44,11 @@ export class Title implements ITitle {
     }
 
     static normalizeSpace(a: string): string {
-        return normalizeSpace(a).replace(/\n{1,2}/g, ' ')
+        return normalizeSpace(a).replace(/\n{1,2}/gu, ' ')
     }
 
     static normalizeTitle(a: string): string {
+        a = a.split('::', 1)[0].trim()
         return Title.normalizeSpace(a)
     }
 }

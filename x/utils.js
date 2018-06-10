@@ -33,15 +33,15 @@ Score.prototype.save = function () {
     return this
 }
 
-Score.prototype.put = function (name, k) {
+Score.prototype.put = function (name, k, title) {
     if (this.results.files.hasOwnProperty(name))
         throw Error('put: Not supported')
-    this.results.files[name] = { k }
+    this.results.files[name] = { k, title }
     this.results.total.k += (k - this.results.total.k) / ++this.results.count
 }
 
 function testingString(r) {
-    return `${r.getTitle()}\n===\n\n${r.clean()}\n`
+    return `${r.getTitle()}\n===\n\n${r.clean()}\n`.replace(/\u00a0/gu, ' ')
 }
 
 module.exports = {

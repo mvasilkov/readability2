@@ -23,8 +23,13 @@ function percent(n) {
     return ' '
 }
 
-function tabEntry(title, { k: a } = {}, { k: b } = {}) {
-    return [title, amount(a), amount(b), percent((b - a) / Math.abs(a) * 100)]
+function labels(title) {
+    return title ? ' T' : ''
+}
+
+function tabEntry(title, { k: a, title: at } = {}, { k: b, title: bt } = {}) {
+    return [title, amount(a) + labels(at), amount(b) + labels(bt),
+        percent((b - a) / Math.abs(a) * 100)]
 }
 
 function report(saved, results, print) {

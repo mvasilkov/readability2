@@ -16,6 +16,10 @@ const results = new Score
 
 let argv = {}
 
+function titleMatches(a, b) {
+    return a.split('===', 1)[0] == b.split('===', 1)[0]
+}
+
 function comparePage(filename, done) {
     readability2(filename + '.repair', function (err, filename, r) {
         const name = path.basename(filename, '.html.repair')
@@ -23,7 +27,7 @@ function comparePage(filename, done) {
 
         const out = testingString(r)
         const ref = fs.readFileSync(`${PAGES_DIR}/txt/${name}.txt`, { encoding: 'utf8' })
-        results.put(name, compare(ref, out, argv.v))
+        results.put(name, compare(ref, out, argv.v), titleMatches(ref, out))
         if (typeof done == 'function') done(null, filename)
     })
 }
