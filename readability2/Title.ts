@@ -1,14 +1,15 @@
 import { IContainerNode, ITitle } from './types'
+import { CString } from './CString'
 import { normalizeSpace } from './functions'
 
 export class Title implements ITitle {
-    private inputs: {
+    private readonly document: {
         title: string,
         headings: string[],
     }
 
     constructor() {
-        this.inputs = {
+        this.document = {
             title: '',
             headings: [],
         }
@@ -16,16 +17,16 @@ export class Title implements ITitle {
 
     append(node: IContainerNode) {
         if (node.tagName == 'title') {
-            this.inputs.title = Title.normalizeTitle(node.toString())
+            this.document.title = Title.normalizeTitle(node.toString())
             return
         }
         const heading = Title.normalizeSpace(node.toString())
         if (heading)
-            this.inputs.headings.push(heading)
+            this.document.headings.push(heading)
     }
 
     getTitle(): string {
-        const { headings, title } = this.inputs
+        const { headings, title } = this.document
 
         if (headings.length == 0)
             return title
@@ -33,9 +34,11 @@ export class Title implements ITitle {
             return headings[0]
 
         if (title) {
+            const ctitle = new CString(title)
             const headings2 = headings
-                .filter(a => a.length <= title.length && title.includes(a))
-                .sort((a, b) => b.length - a.length)
+            .filter(a => a.length <= title.length && ctitle.includes(a))
+            .sort((a, b) => b.length - a.length)
+
             if (headings2.length)
                 return headings2[0]
         }
@@ -48,7 +51,7 @@ export class Title implements ITitle {
     }
 
     static normalizeTitle(a: string): string {
-        a = a.split('::', 1)[0].trim()
-        return Title.normalizeSpace(a)
+        a = a.split('::', 1)[0]
+        return Title.normalizeSpace('\n\n' + a + '\n\n')
     }
 }

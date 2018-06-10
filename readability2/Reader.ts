@@ -1,4 +1,4 @@
-import { ContentVariety, IContainerNode, IReader } from './types'
+import { ContentVariety, IContainerNode, IReader, ITitle } from './types'
 import { Node } from './Node'
 import { Text } from './Text'
 import { Newline } from './Newline'
@@ -9,7 +9,7 @@ import { regexp } from './tuning'
 
 export class Reader implements IReader {
     readonly root: IContainerNode
-    readonly title: Title
+    readonly title: ITitle
     private _cur: IContainerNode
 
     constructor() {

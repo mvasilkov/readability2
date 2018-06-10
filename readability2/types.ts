@@ -54,5 +54,7 @@ export interface IReader {
 }
 
 export interface ITitle {
+    append(node: IContainerNode): void
+
     getTitle(): string
 }
