@@ -1,3 +1,7 @@
+/* This file is part of the Readability2 project.
+ * https://github.com/mvasilkov/readability2
+ * Copyright (c) 2018 Mark Vasilkov (https://github.com/mvasilkov)
+ * License: MIT */
 export const badMultiplier = 0.1
 
 export const rejectScore = 9
