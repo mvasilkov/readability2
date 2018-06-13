@@ -34,7 +34,8 @@ export function parseInlineStyles(css: string): { [prop: string]: string } {
     if (typeof process != 'object' || typeof process.chdir != 'function')
         return {}
 
-    const postcss = require('postcss')
+    const load = require // hide from Google Closure
+    const postcss = load('postcss')
     const result: { [prop: string]: string } = {}
 
     postcss.parse(css).nodes.forEach((n: Declaration) => {
