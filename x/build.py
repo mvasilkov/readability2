@@ -3,17 +3,21 @@
 from contextlib import contextmanager
 from glob import glob
 import os
-import os.path
+from os.path import basename
 from pathlib import Path
+import platform
 import shutil
 import subprocess
 
-REMOVE_LINE = 'Object.defineProperty(exports, "__esModule", { value: true });\n'
-APPEND_LINE = 'window["Readability"] = Readability;\n'
-IIFE_CALL = '.call(this);\n'
+C_ES_MODULE = 'Object.defineProperty(exports, "__esModule", { value: true });\n'
+C_GLOBAL = 'window["Readability"] = Readability;\n'
+C_IIFE_CALL = '.call(this);\n'
+
+MSDOS = platform.system() == 'Windows'
+PATH = os.environ.get('PATH', '')
 
 
-def rmtree(path):
+def rmdir(path):
     shutil.rmtree(path, ignore_errors=True)
     if path.exists():
         raise RuntimeError(f'Could not remove {path}')
@@ -26,7 +30,22 @@ def run(*args):
         stderr=subprocess.PIPE,
         check=True,
         encoding='utf-8',
-        env=os.environ)
+        env=os.environ,
+        shell=MSDOS)
+
+
+def update_file(name, contents):
+    if name == 'readability2.min.js':
+        assert contents.endswith(C_IIFE_CALL)
+        return contents[:-len(C_IIFE_CALL)] + '()'
+
+    assert C_ES_MODULE in contents
+    contents = contents.replace(C_ES_MODULE, '', 1)
+
+    if name == 'Readability.js':
+        return contents + C_GLOBAL
+
+    return contents
 
 
 def replace_file_contents(open_file, contents):
@@ -37,46 +56,34 @@ def replace_file_contents(open_file, contents):
 
 def build():
     our_path = Path(__file__).resolve().parents[1]
-    print(f'our_path = {our_path}')
+    os.chdir(our_path)
 
-    node_modules_bin = str(our_path / 'node_modules' / '.bin')
-    if os.environ.get('PATH'):
-        os.environ['PATH'] = node_modules_bin + os.pathsep + os.environ['PATH']
-    else:
-        os.environ['PATH'] = node_modules_bin
+    node_modules_bin = our_path / 'node_modules' / '.bin'
+    os.environ['PATH'] = f'{node_modules_bin}{os.pathsep}{PATH}'
 
     build_file = our_path / 'build' / 'readability2.min.js'
     build_path = our_path / 'build-js'
 
     if build_path.exists():
-        rmtree(build_path)
+        rmdir(build_path)
 
-    os.chdir(our_path)
-    print('compiling (TypeScript)...')
+    print('Build: compiling (TypeScript)...')
     run('tsc', '--outDir', build_path)
 
     js_files = f'{build_path}/*.js'
-    for filename in glob(js_files):
-        with open(filename, 'r+t', encoding='utf-8', newline='\n') as jsfile:
-            contents = jsfile.read().replace(REMOVE_LINE, '', 1)
-            if os.path.basename(filename) == 'Readability.js':
-                contents += APPEND_LINE
+    for jspath in glob(js_files):
+        with open(jspath, 'r+t', encoding='utf-8') as jsfile:
+            replace_file_contents(jsfile, update_file(basename(jspath), jsfile.read()))
 
-            replace_file_contents(jsfile, contents)
-
-    print('compiling (Google Closure)...')
+    print('Build: compiling (Google Closure)...')
     run('google-closure-compiler', '--js_output_file', build_file, '--isolation_mode', 'IIFE',
         '--module_resolution', 'Node', '--process_common_js_modules', '--rewrite_polyfills',
         'false', js_files)
 
-    rmtree(build_path)
+    rmdir(build_path)
 
-    with open(build_file, 'r+t', encoding='utf-8', newline='\n') as jsfile:
-        contents = jsfile.read()
-        assert contents.endswith(IIFE_CALL)
-        contents = contents[:-len(IIFE_CALL)] + '()'
-
-        replace_file_contents(jsfile, contents)
+    with open(build_file, 'r+t', encoding='utf-8') as jsfile:
+        replace_file_contents(jsfile, update_file(build_file.name, jsfile.read()))
 
 
 @contextmanager
