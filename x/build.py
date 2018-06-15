@@ -12,6 +12,7 @@ import subprocess
 C_ES_MODULE = 'Object.defineProperty(exports, "__esModule", { value: true });\n'
 C_GLOBAL = 'window["Readability"] = Readability;\n'
 C_IIFE_CALL = '.call(this);\n'
+C_LICENSE = '/*! Readability2 | MIT License | github.com/mvasilkov/readability2 */'
 
 MSDOS = platform.system() == 'Windows'
 PATH = os.environ.get('PATH', '')
@@ -37,7 +38,7 @@ def run(*args):
 def update_file(name, contents):
     if name == 'readability2.min.js':
         assert contents.endswith(C_IIFE_CALL)
-        return contents[:-len(C_IIFE_CALL)] + '()'
+        return f'{C_LICENSE}{contents[:-len(C_IIFE_CALL)]}()'
 
     assert C_ES_MODULE in contents
     contents = contents.replace(C_ES_MODULE, '', 1)
