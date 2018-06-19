@@ -38,9 +38,9 @@ export class Title implements ITitle {
             return headings[0]
 
         if (title) {
-            const ctitle = new CString(title)
+            const title2 = new CString(title)
             const headings2 = headings
-            .filter(a => a.length <= title.length && ctitle.includes(a))
+            .filter(a => a.length <= title.length && title2.includes(a))
             .sort((a, b) => b.length - a.length)
 
             if (headings2.length)

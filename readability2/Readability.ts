@@ -31,6 +31,10 @@ export class Readability {
     compute() {
         const { root } = this.reader
         const result = { node: root, sum: 0 }
+
+        if (this._result != null)
+            throw Error('This method can only be called once')
+
         root.compute(result)
         return this._result = result
     }
