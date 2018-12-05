@@ -5,14 +5,14 @@
  * Copyright (c) 2018 Mark Vasilkov (https://github.com/mvasilkov)
  * License: MIT */
 const fs = require('fs')
-const Parse5 = require('parse5')
+const SAXParser = require('parse5-sax-parser')
 
 const { Readability } = require('../javascript/Readability')
 const { connect } = require('../javascript/coupling/parse5')
 
 function run(filename, done) {
     const r = new Readability
-    const parser = new Parse5.SAXParser
+    const parser = new SAXParser
     const file = fs.createReadStream(filename, { encoding: 'utf8' })
 
     connect(r, parser)

@@ -8,17 +8,20 @@
   "license": "MIT",
   "devDependencies": {
     "@mvasilkov/levenshtein": "^0.0.2",
-    "@types/node": "^10.0.8",
+    "@types/node": "*",
+    "@types/parse5-sax-parser": "*",
     "chalk": "^2.4.1",
     "diff": "^3.5.0",
-    "google-closure-compiler": "20180506.0.0",
-    "he": "^1.1.1",
-    "jsonfile": "^4.0.0",
-    "opn": "^5.3.0",
-    "parse5": "^4.0.0",
-    "postcss": "^6.0.22",
-    "systematize": "^3.1.0",
-    "table": "^4.0.3",
-    "yargs-parser": "^10.0.0"
+    "google-closure-compiler": "^20181125.0.1",
+    "he": "^1.2.0",
+    "jsonfile": "^5.0.0",
+    "opn": "^5.4.0",
+    "parse5-parser-stream": "^5.1.0",
+    "parse5-sax-parser": "^5.1.0",
+    "parse5-serializer-stream": "^5.1.0",
+    "postcss": "^7.0.6",
+    "systematize": "^3.2.3",
+    "table": "^5.1.1",
+    "yargs-parser": "^11.1.1"
   }
 }

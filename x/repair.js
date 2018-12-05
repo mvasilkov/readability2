@@ -5,7 +5,8 @@
  * Copyright (c) 2018 Mark Vasilkov (https://github.com/mvasilkov)
  * License: MIT */
 const fs = require('fs')
-const Parse5 = require('parse5')
+const ParserStream = require('parse5-parser-stream')
+const SerializerStream = require('parse5-serializer-stream')
 
 function run(filename, done) {
     try {
@@ -21,11 +22,11 @@ function run(filename, done) {
     }
 
     const infile = fs.createReadStream(filename, { encoding: 'utf8' })
-    const parser = new Parse5.ParserStream
+    const parser = new ParserStream
 
     parser.once('finish', function () {
         const outfile = fs.createWriteStream(filename + '.repair', { encoding: 'utf8' })
-        const writer = new Parse5.SerializerStream(parser.document)
+        const writer = new SerializerStream(parser.document)
 
         outfile.once('finish', function () {
             if (typeof done == 'function') done(null, filename)
