@@ -1,11 +1,23 @@
 {
   "name": "readability2",
   "version": "1.0.0",
-  "description": "Readability",
-  "main": "readability2.js",
+  "description": "Readability2 converts HTML to plain text.",
+  "keywords": [
+    "readability",
+    "html",
+    "plain text",
+    "content extraction"
+  ],
+  "files": [
+    "build/readability2.min.js"
+  ],
+  "main": "build/readability2.min.js",
   "repository": "git@github.com:mvasilkov/readability2.git",
-  "author": "Mark Vasilkov <mvasilkov@gmail.com>",
+  "author": "Mark Vasilkov (https://github.com/mvasilkov)",
   "license": "MIT",
+  "dependencies": {
+    "postcss": "^7.0.6"
+  },
   "devDependencies": {
     "@mvasilkov/levenshtein": "^0.0.2",
     "@types/node": "*",
@@ -19,7 +31,6 @@
     "parse5-parser-stream": "^5.1.0",
     "parse5-sax-parser": "^5.1.0",
     "parse5-serializer-stream": "^5.1.0",
-    "postcss": "^7.0.6",
     "systematize": "^3.2.3",
     "table": "^5.1.1",
     "yargs-parser": "^11.1.1"
