@@ -19,7 +19,7 @@ export class Node implements IContainerNode {
     sum!: number
 
     variety: number = ContentVariety.normal
-    trash: boolean = false
+    burninate: boolean = false
 
     constructor(tagName: string) {
         this.tagName = tagName
@@ -93,6 +93,9 @@ export class Node implements IContainerNode {
     }
 
     toString() {
+        if (this.burninate)
+            return block.has(this.tagName) ? '\n\n' : ''
+
         const parts = this.childNodes.map(n => n.toString())
         if (block.has(this.tagName)) {
             parts.unshift('\n\n')

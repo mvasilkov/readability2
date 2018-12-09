@@ -2,7 +2,7 @@
  * https://github.com/mvasilkov/readability2
  * Copyright (c) 2018 Mark Vasilkov (https://github.com/mvasilkov)
  * License: MIT */
-export const junk = new Set([
+export const reject = new Set([
     'applet',
     'canvas',
     'embed',

@@ -44,7 +44,7 @@ export class Reader implements IReader {
 
         this._cur = this._cur.parentNode
 
-        if (end.trash || grouping.junk.has(name)) {
+        if (end.burninate || grouping.reject.has(name)) {
             this._cur.childNodes.pop()
             return
         }
@@ -81,7 +81,7 @@ export class Reader implements IReader {
 
             case 'module':
                 if (this._cur.tagName == 'air') // vc.ru
-                    this._cur.trash = true
+                    this._cur.burninate = true
                 break
 
             case 'style':

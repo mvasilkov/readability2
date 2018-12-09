@@ -16,6 +16,7 @@ export class Readability {
     readonly ontext: (content: string) => void
 
     private _result: { node: IContainerNode, sum: number } | null = null
+    private _title: string | null = null
 
     private _cleaner?: Cleaner
 
@@ -46,10 +47,15 @@ export class Readability {
         if (this._cleaner == null)
             this._cleaner = new Cleaner(this._result.node)
 
+        this.getTitle() // burninate the heading node
+
         return normalizeSpace(this._cleaner.root.toString())
     }
 
     getTitle(): string {
-        return this.reader.title.getTitle()
+        if (this._title == null)
+            this._title = this.reader.title.getTitle()
+
+        return this._title
     }
 }

@@ -36,7 +36,7 @@ export interface IContainerNode extends INode {
     sum: number
 
     variety: number
-    trash: boolean
+    burninate: boolean
 
     appendChild<NT extends INode>(node: NT): NT
 
@@ -61,4 +61,9 @@ export interface ITitle {
     append(node: IContainerNode): void
 
     getTitle(): string
+}
+
+export type Heading = {
+    content: string,
+    node: IContainerNode,
 }
