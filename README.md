@@ -11,9 +11,9 @@ Installation
 See it in action
 ----------------
 * [Pictures][2]
-* [Google Chrome extension][3] (early access)
+* [Chrome extension][3] (early access)
 
-[2]: http://imgur.com/a/4Vp1N
+[2]: https://imgur.com/a/Xr0M38J
 [3]: https://chrome.google.com/webstore/detail/plaintextify/emmfeegdeiphciknpfmglmpekijpkann
 
 License
