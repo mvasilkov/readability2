@@ -83,3 +83,13 @@ export const heading = new Set([
     'h6',
     'title',
 ])
+
+export const hyper = new Set([
+    'button',
+    'option',
+])
+
+export const bad = new Set([
+    'footer',
+    'textarea',
+])

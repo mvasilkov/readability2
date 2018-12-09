@@ -8,7 +8,7 @@ import { Text } from './Text'
 import { Newline } from './Newline'
 import { Title } from './Title'
 import { parseInlineStyles } from './functions'
-import { heading, junk } from './grouping'
+import * as grouping from './grouping'
 import { regexp } from './tuning'
 
 export class Reader implements IReader {
@@ -26,6 +26,12 @@ export class Reader implements IReader {
 
         this._cur = this._cur.appendChild(new Node(name))
         this._cur.variety = this._cur.parentNode!.variety
+
+        if (grouping.bad.has(name))
+            this._cur.variety |= ContentVariety.bad
+
+        if (grouping.hyper.has(name))
+            this._cur.variety |= ContentVariety.hyperlink
     }
 
     onclosetag(name: string) {
@@ -38,12 +44,12 @@ export class Reader implements IReader {
 
         this._cur = this._cur.parentNode
 
-        if (end.trash || junk.has(name)) {
+        if (end.trash || grouping.junk.has(name)) {
             this._cur.childNodes.pop()
             return
         }
 
-        if (heading.has(name)) {
+        if (grouping.heading.has(name)) {
             this.title.append(end)
             return
         }
@@ -64,7 +70,7 @@ export class Reader implements IReader {
 
         switch (name) {
             case 'href':
-                if (this._cur.tagName == 'a')
+                if (this._cur.tagName == 'a' || this._cur.tagName == 'area')
                     this._cur.variety |= ContentVariety.hyperlink
                 break
 
