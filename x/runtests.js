@@ -18,6 +18,10 @@ const PAGES_DIR = `${__dirname}/../r2_test_pages`
 
 const results = new Score
 
+/* Usage: runtests.js [-b] [-t NAME] [-v]
+ * -b       | Use Readability2 from build/readability2.min.js
+ * -t NAME  | Run tests containing NAME
+ * -v       | Verbose */
 let argv = {}
 
 function titleMatches(a, b) {
@@ -25,7 +29,7 @@ function titleMatches(a, b) {
 }
 
 function comparePage(filename, done) {
-    readability2(filename + '.repair', function (err, filename, r) {
+    readability2(filename + '.repair', argv.b, function (err, filename, r) {
         const name = path.basename(filename, '.html.repair')
         console.log(`* ${name}.html`)
 
@@ -41,7 +45,7 @@ function run() {
     const _comparePage = promisify(comparePage)
 
     const files = lsFiles(`${PAGES_DIR}/html`).filter(hasSuffix('.html'))
-    .filter(a => argv.m ? a.includes(argv.m) : true)
+    .filter(a => argv.t ? a.includes(argv.t) : true)
 
     Promise.all(files.map(filename => _repair(filename).then(_comparePage)))
     .then(function () {

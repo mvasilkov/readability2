@@ -2,5 +2,5 @@ readability2.iml
 node_modules/
 debug.html
 .vscode/
-javascript/
+.javascript/
 score.json

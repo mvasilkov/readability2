@@ -13,6 +13,9 @@ C_ES_MODULE = 'Object.defineProperty(exports, "__esModule", { value: true });\n'
 C_GLOBAL = 'window["Readability"] = Readability;\n'
 C_IIFE_CALL = '.call(this);\n'
 C_LICENSE = '/*! Readability2 | MIT License | github.com/mvasilkov/readability2 */'
+C_EXPORTS = 'if("undefined"==typeof window){window=exports}'
+C_STRICT = '"use strict";'
+C_GROUPING = 'require("../grouping");'
 
 MSDOS = platform.system() == 'Windows'
 PATH = os.environ.get('PATH', '')
@@ -38,10 +41,14 @@ def run(*args):
 def update_file(name, contents):
     if name == 'readability2.min.js':
         assert contents.endswith(C_IIFE_CALL)
-        return f'{C_LICENSE}{contents[:-len(C_IIFE_CALL)]}()'
+        return f'{C_LICENSE}{C_EXPORTS}{contents[:-len(C_IIFE_CALL)]}()'
 
     assert C_ES_MODULE in contents
     contents = contents.replace(C_ES_MODULE, '', 1)
+
+    assert contents.startswith(C_STRICT)
+    contents = contents.replace(C_STRICT, '\'use strict\'', 1)
+    contents = contents.replace(C_GROUPING, 'require(\'./grouping\')', 1)
 
     if name == 'Readability.js':
         return contents + C_GLOBAL
@@ -71,20 +78,26 @@ def build():
     print('Build: compiling (TypeScript)...')
     run('tsc', '--outDir', build_path)
 
-    js_files = f'{build_path}/*.js'
-    for jspath in glob(js_files):
+    js_files = []
+    for jspath in glob(f'{build_path}/**/*.js', recursive=True):
+        js_files.append(jspath)
         with open(jspath, 'r+t', encoding='utf-8') as jsfile:
             replace_file_contents(jsfile, update_file(basename(jspath), jsfile.read()))
 
     print('Build: compiling (Google Closure)...')
     run('google-closure-compiler', '--js_output_file', build_file, '--isolation_mode', 'IIFE',
         '--module_resolution', 'Node', '--process_common_js_modules', '--rewrite_polyfills',
-        'false', js_files)
-
-    rmdir(build_path)
+        'false', *[a for a in js_files if not a.endswith('parse5.js')])
 
     with open(build_file, 'r+t', encoding='utf-8') as jsfile:
         replace_file_contents(jsfile, update_file(build_file.name, jsfile.read()))
+
+    print('Copy: coupling')
+    rmdir(our_path / 'coupling')
+    shutil.copytree(build_path / 'coupling', our_path / 'coupling')
+    shutil.copy2(build_path / 'grouping.js', our_path / 'coupling')
+
+    rmdir(build_path)
 
 
 @contextmanager

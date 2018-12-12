@@ -8,7 +8,7 @@ const fs = require('fs')
 const he = require('he')
 const opn = require('opn')
 
-const { Newline } = require('../javascript/Newline')
+const { Newline } = require('../.javascript/Newline')
 const readability2 = require('./cli')
 const { testingString } = require('./utils')
 
@@ -61,7 +61,7 @@ function writeTab(node, result, result2, tab, level) {
 }
 
 function run(filename) {
-    readability2(filename, function (err, filename, r) {
+    readability2(filename, false, function (err, filename, r) {
         process.stderr.write(testingString(r))
 
         const tab = ['<table>']

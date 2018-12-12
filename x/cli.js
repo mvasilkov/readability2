@@ -7,10 +7,17 @@
 const fs = require('fs')
 const SAXParser = require('parse5-sax-parser')
 
-const { Readability } = require('../javascript/Readability')
-const { connect } = require('../javascript/coupling/parse5')
+function run(filename, build, done) {
+    let Readability, connect
+    if (build) {
+        Readability = require('..').Readability
+        connect = require('../coupling/parse5').connect
+    }
+    else {
+        Readability = require('../.javascript/Readability').Readability
+        connect = require('../.javascript/coupling/parse5').connect
+    }
 
-function run(filename, done) {
     const r = new Readability
     const parser = new SAXParser
     const file = fs.createReadStream(filename, { encoding: 'utf8' })

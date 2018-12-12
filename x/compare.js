@@ -24,7 +24,7 @@ function compare(a, b, print) {
 }
 
 function run(name) {
-    readability2(`${PAGES_DIR}/html/${name}.html.repair`, function (err, filename, r) {
+    readability2(`${PAGES_DIR}/html/${name}.html.repair`, false, function (err, filename, r) {
         const out = testingString(r)
         const ref = fs.readFileSync(`${PAGES_DIR}/txt/${name}.txt`, { encoding: 'utf8' })
         compare(ref, out, true)

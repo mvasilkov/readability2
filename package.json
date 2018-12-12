@@ -9,7 +9,8 @@
     "content extraction"
   ],
   "files": [
-    "build/readability2.min.js"
+    "build/readability2.min.js",
+    "coupling/*.js"
   ],
   "main": "build/readability2.min.js",
   "repository": "git@github.com:mvasilkov/readability2.git",
